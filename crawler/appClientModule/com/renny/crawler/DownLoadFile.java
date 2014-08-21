@@ -57,7 +57,9 @@ public class DownLoadFile {
 		String filePath = null;
 		
 		RequestConfig.Builder requestConfigBuilder =RequestConfig.custom();
-		requestConfigBuilder =requestConfigBuilder.setConnectTimeout(5000).setConnectionRequestTimeout(5000);
+		requestConfigBuilder =requestConfigBuilder.setConnectTimeout(5000)
+				.setConnectionRequestTimeout(5000)
+				.setCircularRedirectsAllowed(true);
 		
 		HttpClientBuilder httpClientBuilder =HttpClientBuilder.create();
 		httpClientBuilder.setDefaultRequestConfig(requestConfigBuilder.build());
@@ -69,17 +71,18 @@ public class DownLoadFile {
 			httpResponse =httpClient.execute(httpGet);
 			int statusCode =httpResponse.getStatusLine().getStatusCode();
 			if(statusCode !=HttpStatus.SC_OK) {
-				System.out.println("url get request failed:" + httpResponse.getStatusLine());
+				System.err.println("url get request failed:" + httpResponse.getStatusLine());
 				filePath = null;
+			} else {
+				//execute HTTP content
+				File file = new File("temp");
+				if(!file.exists()) file.mkdir();
+				filePath = "temp/" +getFileNameByUrl(url,httpResponse.getFirstHeader("Content-Type").getValue());
+				saveToLocal(httpResponse.getEntity().getContent(), filePath);
 			}
-			
-			//execute HTTP content
-			File file = new File("temp");
-			if(!file.exists()) file.mkdir();
-			filePath = "temp/" +getFileNameByUrl(url,httpResponse.getFirstHeader("Content-Type").getValue());
-			saveToLocal(httpResponse.getEntity().getContent(), filePath);
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("download file failed from url: " +url);
+			//e.printStackTrace();
 		} finally {
 			if(httpGet!=null) httpGet.releaseConnection();
 			try {

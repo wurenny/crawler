@@ -1,6 +1,7 @@
 package com.renny.crawler;
 
 import java.util.HashSet;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 public class LinkQueue {
@@ -8,14 +9,14 @@ public class LinkQueue {
 	@SuppressWarnings("unchecked")
 	private static Set visitedUrl = new HashSet();
 	
-	private static Queue unVisitedUrl = new Queue();
+	private static PriorityQueue unVisitedUrl = new PriorityQueue();
 	
-	public static Queue getUnVisitedUrl() {
+	public static PriorityQueue getUnVisitedUrl() {
 		return unVisitedUrl;
 	}
 	
 	public static void addVisitedUrl(String url) {
-		visitedUrl.remove(url);
+		visitedUrl.add(url);
 	}
 	
 	public static void removeVisitedUrl(String url) {
@@ -23,7 +24,7 @@ public class LinkQueue {
 	}
 	
 	public static Object unVisitedUrlDeQueue() {
-		return unVisitedUrl.deQueue();
+		return unVisitedUrl.poll();
 	}
 	
 	public static void addUnvisitedUrl(String url) {
@@ -31,7 +32,7 @@ public class LinkQueue {
 				&& !url.trim().equals("")
 				&& !visitedUrl.contains(url)
 				&& !unVisitedUrl.contains(url)) {
-			unVisitedUrl.enQueue(url);
+			unVisitedUrl.add(url);
 		}
 	}
 	
@@ -40,6 +41,6 @@ public class LinkQueue {
 	}
 	
 	public static boolean unVisitedUrlisEmpty() {
-		return unVisitedUrl.empty();
+		return unVisitedUrl.isEmpty();
 	}
 }
