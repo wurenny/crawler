@@ -140,10 +140,11 @@ public class WordCount extends Configured implements Tool {
 	
 	public static void main(String[] args) throws Exception {
 		List<String> args1 =new ArrayList<String>();
-		args1.add("hdfs://localhost:9000/wordcount/input");
-		args1.add("hdfs://localhost:9000/wordcount/output");
-		String[] ss ={};
-		int res =ToolRunner.run(new Configuration(), new WordCount(), (String[])args1.toArray(ss));
+		args1.add("./wordcount/input");
+		args1.add("./wordcount/output");
+		int res =ToolRunner.run(new Configuration(), new WordCount(), args);
+		//String[] ss ={};
+		//int res =ToolRunner.run(new Configuration(), new WordCount(), (String[])args1.toArray(ss));
 		System.out.println("finished.");
 		System.exit(res);
 	}
