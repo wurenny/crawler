@@ -1,6 +1,8 @@
 package com.renny.test;
 
 import java.io.UnsupportedEncodingException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Test {
 	public static void main(String[] args) {
@@ -17,5 +19,9 @@ public class Test {
 		
 		int a =5, b=11;
 		System.out.println(a | b);
+		
+		Pattern pattern =Pattern.compile("java |cpp");
+		Matcher matcher =pattern.matcher("javaaaa");
+		System.out.println(matcher.find());
 	}
 }

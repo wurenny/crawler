@@ -26,7 +26,7 @@ public class TestTabDivSerial {
 	private static final String NEWLINE =System.getProperty("line.separator");
 	private static final int NEWLINE_SIZE =NEWLINE.length();
 	private static final String oriEncode ="gb2312,utf-8,gbk,iso-8859-1";
-	private ArrayList htmlContext =new ArrayList();
+	private List<TableContext> htmlContext =new ArrayList<TableContext>();
 	
 	private String url, urlEncode;
 	private int tableNumber, channelNumber, totalNumber;
@@ -35,17 +35,33 @@ public class TestTabDivSerial {
 	private Pattern pattern, patternPost;
 	
 	public void channelParseProcess() {
-		urlDomainPattern ="";
-		urlPattern ="";
+		urlDomainPattern ="(http://[^/]*?" +domain +"/)(.*?)";
+		urlPattern ="(http://[^/]*?" +domain +"/[^.]*?).(shtml|html|htm|shtm|php|asp|asp#|cgi|jsp|aspx)";
 		pattern =Pattern.compile(urlDomainPattern, Pattern.CASE_INSENSITIVE +Pattern.DOTALL);
 		patternPost =Pattern.compile(urlPattern, Pattern.CASE_INSENSITIVE +Pattern.DOTALL);
+		urlEncode =dectedEncode(url);
+		if (urlEncode ==null) return;
+		singContext(url);
+		if ((totalNumber =htmlContext.size()) ==0) return;
 		
+		for (TableContext tc : htmlContext) {
+			totalNumber =tc.getTableRow();
+			if (tc.getTableRow() ==channelNumber || channelNumber ==-1) {
+				System.out.println("************±íµ¥" +tc.getTableRow() +"*************");
+				List<LinkTag> linkList =tc.getLinkList();
+				if (linkList ==null || linkList.size() ==0) continue;
+				for (LinkTag linkTag : linkList) {
+					if (isValidLink(linkTag.getLink()) ==SpiderConstant.OUTDOMAINLINKTYPE || linkTag.getLink().length() <8) continue;
+					System.out.println("URL:" +linkTag.getLinkText() +"\t" +linkTag.getLink());
+				}
+			}
+		}
 	}
 	
 	public int isValidLink(String link) {
 		Matcher matcher =pattern.matcher(link);
 		while (matcher.find()) {
-			int start =matcher.start(2);
+			//int start =matcher.start(2);
 			int end =matcher.end(2);
 			String postUrl =link.substring(end).trim();
 			if (postUrl.length() ==0 || postUrl.indexOf(".") <0) return SpiderConstant.CHANNELLINKTYPE;
@@ -93,12 +109,12 @@ public class TestTabDivSerial {
 		if (tableList !=null && tableList.size() >0) {
 			if (b) {
 				TableContext tc =new TableContext();
-				tc.setLinkList(new ArrayList());
+				tc.setLinkList(new ArrayList<LinkTag>());
 				tc.setTextBuffer(new StringBuffer());
 				tableNumber ++;
 				tc.setTableRow(tableNumber);
 				for (Node n : tableList) {
-					if (n instanceof LinkTag) tc.getLinkList().add(n);
+					if (n instanceof LinkTag) tc.getLinkList().add((LinkTag)n);
 					else tc.getTextBuffer().append(collapse(n.getText().replaceAll(" ", "")));
 				}
 				htmlContext.add(tc);

@@ -2,17 +2,19 @@ package com.renny.extracthtml;
 
 import java.util.List;
 
+import org.htmlparser.tags.LinkTag;
+
 public class TableContext {
-	private List linkList;
+	private List<LinkTag> linkList;
 	private StringBuffer textBuffer;
 	private int tableRow;
 	private int totalRow;
 	private String sign;
 	
-	public List getLinkList() {
+	public List<LinkTag> getLinkList() {
 		return linkList;
 	}
-	public void setLinkList(List linkList) {
+	public void setLinkList(List<LinkTag> linkList) {
 		this.linkList = linkList;
 	}
 	public StringBuffer getTextBuffer() {
