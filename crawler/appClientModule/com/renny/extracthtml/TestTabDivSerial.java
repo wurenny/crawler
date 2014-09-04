@@ -47,7 +47,7 @@ public class TestTabDivSerial {
 		for (TableContext tc : htmlContext) {
 			totalNumber =tc.getTableRow();
 			if (tc.getTableRow() ==channelNumber || channelNumber ==-1) {
-				System.out.println("************±Ìµ•" +tc.getTableRow() +"*************");
+				System.out.println("************Ë°®Âçï" +tc.getTableRow() +"*************");
 				List<LinkTag> linkList =tc.getLinkList();
 				if (linkList ==null || linkList.size() ==0) continue;
 				for (LinkTag linkTag : linkList) {
